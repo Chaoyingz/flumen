@@ -96,3 +96,8 @@ def test_save_array(array_storage: ArrayStorage, array: List[str]) -> None:
     array_storage.save()
     loaded_array = array_storage.load()
     assert np.array_equal(array, loaded_array)
+
+
+def test_index_array(array_storage: ArrayStorage, array: List[str]) -> None:
+    array_storage.append(array)
+    assert array_storage.index("2022-01-03") == 2
