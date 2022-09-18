@@ -8,15 +8,8 @@ from flumen.storage.array import ArrayStorage
 
 
 @pytest.fixture()
-def uri(tmp_path: pathlib.Path, random_str: str) -> pathlib.Path:
-    uri_ = tmp_path / random_str
-    uri_.touch()
-    return uri_
-
-
-@pytest.fixture()
-def array_storage(uri: pathlib.Path) -> ArrayStorage:
-    return ArrayStorage[str](uri, np.dtype("U10"))
+def array_storage(tmp_file: pathlib.Path) -> ArrayStorage:
+    return ArrayStorage[str](tmp_file, np.dtype("U10"))
 
 
 @pytest.fixture()
