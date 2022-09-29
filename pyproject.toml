@@ -44,3 +44,6 @@ testpaths = [
 [tool.black]
 line-length = 88
 include = '\.pyi?$'
+
+[tool.coverage.report]
+exclude_lines =["pragma: not covered", "@overload"]
