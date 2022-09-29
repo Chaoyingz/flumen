@@ -13,8 +13,17 @@ def array_storage(tmp_file: pathlib.Path) -> ArrayStorage:
 
 
 @pytest.fixture()
-def array() -> List[str]:
-    return ["2022-01-01", "2022-01-02", "2022-01-03", "2022-01-04", "2022-01-05"]
+def array() -> np.array:
+    return np.array(
+        ["2022-01-01", "2022-01-02", "2022-01-03", "2022-01-04", "2022-01-05"]
+    )
+
+
+def test_insert_array(array_storage: ArrayStorage, array: np.array) -> None:
+    array_storage.insert(0, array)
+    assert np.array_equal(array_storage[:], array)
+    array_storage.insert(0, "2022-01-06")
+    assert array_storage[0] == "2022-01-06"
 
 
 def test_len_array(array_storage: ArrayStorage, array: List[str]) -> None:
@@ -33,9 +42,9 @@ def test_set_array(array_storage: ArrayStorage, array: List[str]) -> None:
     array_storage.append(array)
     array_storage[0] = "2022-01-06"
     assert array_storage[0] == "2022-01-06"
-    array_storage[0:2] = np.array(["2022-01-07", "2022-01-08"], array_storage.dtype)
+    array_storage[0:2] = np.array(["2022-01-07", "2022-01-08"], array_storage._dtype)
     assert np.array_equal(
-        array_storage[0:2], np.array(["2022-01-07", "2022-01-08"], array_storage.dtype)
+        array_storage[0:2], np.array(["2022-01-07", "2022-01-08"], array_storage._dtype)
     )
 
 
@@ -45,18 +54,11 @@ def test_del_array(array_storage: ArrayStorage, array: List[str]) -> None:
     assert array_storage[0] == "2022-01-02"
 
 
-def test_insert_array(array_storage: ArrayStorage, array: List[str]) -> None:
-    array_storage.insert(0, array)
-    assert np.array_equal(array_storage[:], array)
-    array_storage.insert(0, "2022-01-06")
-    assert array_storage[0] == "2022-01-06"
-
-
 def test_append_array(array_storage: ArrayStorage) -> None:
     array_storage.append("2022-01-01")
     array_storage.append("2022-01-02")
     assert np.array_equal(
-        array_storage[:], np.array(["2022-01-01", "2022-01-02"], array_storage.dtype)
+        array_storage[:], np.array(["2022-01-01", "2022-01-02"], array_storage._dtype)
     )
 
 
@@ -66,7 +68,7 @@ def test_extend_array(array_storage: ArrayStorage, array: List[str]) -> None:
 
 
 def test_load_array(array_storage: ArrayStorage, array: List[str]) -> None:
-    empty_array = np.array([], dtype=array_storage.dtype)
+    empty_array = np.array([], dtype=array_storage._dtype)
     loaded_array = array_storage.load()
     assert np.array_equal(empty_array, loaded_array)
 

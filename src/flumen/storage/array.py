@@ -9,9 +9,12 @@ _T = TypeVar("_T")
 
 class ArrayStorage(Generic[_T], MutableSequence):
     def __init__(self, uri: pathlib.Path, dtype: np.dtype) -> None:
-        self.dtype = dtype
+        self._dtype = dtype
         self._uri = uri
         self._data = self.load()
+
+    def insert(self, index: int, item: Union[_T, np.array]) -> None:
+        self._data = np.insert(self._data, index, item)
 
     def __len__(self) -> int:
         return len(self._data)
@@ -44,9 +47,6 @@ class ArrayStorage(Generic[_T], MutableSequence):
     def __delitem__(self, index: Union[int, slice]) -> None:
         self._data = np.delete(self._data, index)
 
-    def insert(self, index: int, item: Union[_T, np.array]) -> None:
-        self._data = np.insert(self._data, index, item)
-
     def append(self, item: _T) -> None:
         self._data = np.append(self._data, item)
 
@@ -55,10 +55,10 @@ class ArrayStorage(Generic[_T], MutableSequence):
 
     def load(self) -> np.array:
         if self._uri.exists():
-            return np.fromfile(self._uri, dtype=self.dtype)
+            return np.fromfile(self._uri, dtype=self._dtype)
         else:
             self._uri.touch()
-            return np.array([], dtype=self.dtype)
+            return np.array([], dtype=self._dtype)
 
     def reload(self) -> None:
         self._data = self.load()
