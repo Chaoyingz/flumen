@@ -69,6 +69,7 @@ def test_extend_array(array_storage: ArrayStorage, array: List[str]) -> None:
 
 def test_load_array(array_storage: ArrayStorage, array: List[str]) -> None:
     empty_array = np.array([], dtype=array_storage._dtype)
+    array_storage._uri.unlink()
     loaded_array = array_storage.load()
     assert np.array_equal(empty_array, loaded_array)
 

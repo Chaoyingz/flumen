@@ -56,6 +56,8 @@ def test_iter_dict(dict_storage: DictStorage, dict_: Dict[str, tuple]) -> None:
 
 
 def test_load_dict(dict_storage: DictStorage, dict_: Dict[str, tuple]) -> None:
+    dict_storage._uri.unlink()
+    assert dict_storage.load() == dict()
     dict_storage.update(dict_)
     dict_storage.save()
     assert dict_storage.load() == dict_
