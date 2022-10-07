@@ -7,11 +7,12 @@ authors = [
 ]
 dependencies = [
     "pandas>=1.4.4",
-    "pandera>=0.12.0",
     "pydantic>=1.10.2",
     "aenum>=3.1.11",
+    "pandas-market-calendars>=4.0",
+    "pendulum>=2.1.2",
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.8"
 readme = "README.md"
 license = {text = "Apache"}
 [project.optional-dependencies]
@@ -28,6 +29,7 @@ dev = [
     "pre-commit>=2.20.0",
     "ipython>=8.5.0",
     "pytest-cov>=4.0.0",
+    "pytest-asyncio>=0.19.0",
 ]
 
 [tool.isort]
@@ -37,6 +39,7 @@ filter_files = true
 
 [tool.pytest.ini_options]
 addopts = "-ra"
+asyncio_mode = "auto"
 testpaths = [
     "tests/",
 ]
@@ -47,3 +50,6 @@ include = '\.pyi?$'
 
 [tool.coverage.report]
 exclude_lines =["pragma: not covered", "@overload"]
+
+[tool.mypy]
+warn_unused_ignores = true

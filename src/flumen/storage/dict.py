@@ -51,6 +51,6 @@ class DictStorage(Generic[_KT, _VT], MutableMapping):
     def reload(self) -> None:
         self._data = self.load()
 
-    def save(self) -> None:
+    async def save(self) -> None:
         with open(self._uri, "wb") as f:
             pickle.dump(self._data, f)

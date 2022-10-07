@@ -55,23 +55,23 @@ def test_iter_dict(dict_storage: DictStorage, dict_: Dict[str, tuple]) -> None:
     assert set(dict_storage) == set(dict_)
 
 
-def test_load_dict(dict_storage: DictStorage, dict_: Dict[str, tuple]) -> None:
+async def test_load_dict(dict_storage: DictStorage, dict_: Dict[str, tuple]) -> None:
     dict_storage._uri.unlink()
     assert dict_storage.load() == dict()
     dict_storage.update(dict_)
-    dict_storage.save()
+    await dict_storage.save()
     assert dict_storage.load() == dict_
 
 
-def test_reload_dict(dict_storage: DictStorage, dict_: Dict[str, tuple]) -> None:
+async def test_reload_dict(dict_storage: DictStorage, dict_: Dict[str, tuple]) -> None:
     dict_storage.update(dict_)
-    dict_storage.save()
+    await dict_storage.save()
     dict_storage["600519.XSHG"] = ("2022-01-01", "2022-09-02")
     dict_storage.reload()
     assert dict_storage["600519.XSHG"] == ("2022-01-01", "2022-09-01")
 
 
-def test_save_dict(dict_storage: DictStorage, dict_: Dict[str, tuple]) -> None:
+async def test_save_dict(dict_storage: DictStorage, dict_: Dict[str, tuple]) -> None:
     dict_storage.update(dict_)
-    dict_storage.save()
+    await dict_storage.save()
     assert dict_storage.load() == dict_
