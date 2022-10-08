@@ -52,4 +52,19 @@ include = '\.pyi?$'
 exclude_lines =["pragma: not covered", "@overload"]
 
 [tool.mypy]
+python_version = "3.10"
 warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unreachable = true
+warn_return_any = true
+
+disallow_incomplete_defs = true
+disallow_untyped_calls = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
+
+show_error_codes = true
+strict_optional = true
+check_untyped_defs = true
+no_implicit_reexport = true
