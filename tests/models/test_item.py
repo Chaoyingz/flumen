@@ -10,7 +10,7 @@ def test_validate_datetime() -> None:
     with pytest.raises(ValueError) as excinfo:
         Item(
             entity_id="entity_id",
-            field_id="field_id",
+            feature_id="field_id",
             freq=Frequency.from_str("D"),
             start_datetime=pendulum.parse("2020-01-03"),
             end_datetime=pendulum.parse("2020-01-01"),
@@ -27,7 +27,7 @@ def test_validate_series_type() -> None:
     with pytest.raises(ValueError) as excinfo:
         Item(
             entity_id="entity_id",
-            field_id="field_id",
+            feature_id="field_id",
             freq=Frequency.from_str("D"),
             start_datetime=pendulum.parse("2020-01-01"),
             end_datetime=pendulum.parse("2020-01-03"),
@@ -47,7 +47,7 @@ def test_validate_series() -> None:
     with pytest.raises(ValueError) as excinfo:
         Item(
             entity_id="entity_id",
-            field_id="field_id",
+            feature_id="field_id",
             freq=Frequency.from_str("D"),
             start_datetime=pendulum.parse("2020-01-01"),
             end_datetime=pendulum.parse("2020-01-03"),

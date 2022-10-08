@@ -33,7 +33,7 @@ class CalendarStore(Store):
     def get_freq_calendar_uri(self, freq: Frequency) -> pathlib.Path:
         return self._uri / f"{freq.raw_str}{self.CALENDAR_STORAGE_EXTENSION}"
 
-    async def create(
+    async def insert(
         self,
         freq: Frequency,
         start_datetime: pendulum.DateTime,
@@ -46,7 +46,7 @@ class CalendarStore(Store):
         self._data[freq].extend(calendar_series.values)
         await self._data[freq].save()
 
-    async def get(
+    async def find(
         self,
         freq: Frequency,
         start_datetime: pendulum.DateTime,

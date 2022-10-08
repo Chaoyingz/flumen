@@ -10,7 +10,7 @@ from flumen.models.frequency import Frequency
 
 class Item(BaseModel):
     entity_id: str
-    field_id: str
+    feature_id: str
     freq: Frequency
     start_datetime: DateTime
     end_datetime: DateTime

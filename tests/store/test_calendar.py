@@ -24,7 +24,7 @@ def freq_1d() -> Frequency:
 async def calendar_store_created(
     freq_1d: Frequency, calendar_store: CalendarStore
 ) -> CalendarStore:
-    await calendar_store.create(
+    await calendar_store.insert(
         freq_1d,
         pendulum.parse("2020-01-01"),
         pendulum.parse("2020-01-31"),
@@ -66,7 +66,7 @@ async def test_create_calendar_twice(
     freq_1d: Frequency, calendar_store_created: CalendarStore
 ) -> None:
     with pytest.raises(ValueError):
-        await calendar_store_created.create(
+        await calendar_store_created.insert(
             freq_1d,
             pendulum.parse("2020-01-01"),
             pendulum.parse("2020-01-31"),
@@ -76,7 +76,7 @@ async def test_create_calendar_twice(
 async def test_get_calendar(
     freq_1d: Frequency, calendar_store_created: CalendarStore
 ) -> None:
-    actual_calendar = await calendar_store_created.get(
+    actual_calendar = await calendar_store_created.find(
         freq_1d,
         pendulum.parse("2020-01-05"),
         pendulum.parse("2020-01-10"),
@@ -94,7 +94,7 @@ async def test_get_calendar_not_created(
     freq_1d: Frequency, calendar_store: CalendarStore
 ) -> None:
     with pytest.raises(ValueError):
-        await calendar_store.get(
+        await calendar_store.find(
             freq_1d,
             pendulum.parse("2020-01-05"),
             pendulum.parse("2020-01-10"),
@@ -104,7 +104,7 @@ async def test_get_calendar_not_created(
 async def test_update_calendar(
     freq_1d: Frequency, calendar_store: CalendarStore
 ) -> None:
-    await calendar_store.create(
+    await calendar_store.insert(
         freq_1d,
         pendulum.parse("2020-01-05"),
         pendulum.parse("2020-01-10"),
