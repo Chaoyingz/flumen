@@ -3,18 +3,18 @@ import pendulum
 import pytest
 
 from flumen.models.frequency import Frequency
-from flumen.models.item import Item
+from flumen.models.timeseries import TimeSeries
 
 
 def test_validate_datetime() -> None:
     with pytest.raises(ValueError) as excinfo:
-        Item(
+        TimeSeries(
             entity_id="entity_id",
             feature_id="field_id",
             freq=Frequency.from_str("D"),
             start_datetime=pendulum.parse("2020-01-03"),
             end_datetime=pendulum.parse("2020-01-01"),
-            series=pd.Series(
+            values=pd.Series(
                 [],
                 dtype="float32",
                 index=pd.DatetimeIndex([], dtype="datetime64[ns, UTC]", freq="D"),
@@ -23,15 +23,15 @@ def test_validate_datetime() -> None:
     assert "start_datetime must be less than end_datetime" in str(excinfo.value)
 
 
-def test_validate_series_type() -> None:
+def test_validate_value_type() -> None:
     with pytest.raises(ValueError) as excinfo:
-        Item(
+        TimeSeries(
             entity_id="entity_id",
             feature_id="field_id",
             freq=Frequency.from_str("D"),
             start_datetime=pendulum.parse("2020-01-01"),
             end_datetime=pendulum.parse("2020-01-03"),
-            series=pd.Series(
+            values=pd.Series(
                 [1, 2, 3],
                 index=pd.DatetimeIndex(
                     ["2020-01-01", "2020-01-02", "2020-01-03"],
@@ -40,18 +40,18 @@ def test_validate_series_type() -> None:
                 ),
             ),
         )
-    assert "series index must be datetime64[ns, UTC]" in str(excinfo.value)
+    assert "series index must be datetime with timezone" in str(excinfo.value)
 
 
-def test_validate_series() -> None:
+def test_validate_values() -> None:
     with pytest.raises(ValueError) as excinfo:
-        Item(
+        TimeSeries(
             entity_id="entity_id",
             feature_id="field_id",
             freq=Frequency.from_str("D"),
             start_datetime=pendulum.parse("2020-01-01"),
             end_datetime=pendulum.parse("2020-01-03"),
-            series=pd.Series(
+            values=pd.Series(
                 [1, 2, 3],
                 index=pd.DatetimeIndex(
                     ["2022-01-01", "2022-01-02", "2022-01-03"],
@@ -61,3 +61,22 @@ def test_validate_series() -> None:
             ),
         )
     assert "series index must match date_range" in str(excinfo.value)
+
+
+def test_convert_timezone() -> None:
+    ts = TimeSeries(
+        entity_id="entity_id",
+        feature_id="field_id",
+        freq=Frequency.from_str("D"),
+        start_datetime=pendulum.parse("2020-01-01"),
+        end_datetime=pendulum.parse("2020-01-03"),
+        values=pd.Series(
+            [1, 2, 3],
+            index=pd.DatetimeIndex(
+                ["2020-01-01", "2020-01-02", "2020-01-03"],
+                dtype="datetime64[ns, US/Eastern]",
+                freq="D",
+            ),
+        ),
+    )
+    assert str(ts.values.index.tz) == "UTC"
