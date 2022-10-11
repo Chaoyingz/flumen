@@ -46,7 +46,7 @@ async def test_load_exists_data(
     assert len(data[freq_1d]) == 31
 
 
-async def test_create_calendar(
+async def test_insert_calendar(
     freq_1d: Frequency, calendar_store_created: CalendarStore
 ) -> None:
     actual_calendar = calendar_store_created._data[freq_1d][:].index
@@ -62,7 +62,7 @@ async def test_create_calendar(
     )
 
 
-async def test_create_calendar_twice(
+async def test_insert_calendar_twice(
     freq_1d: Frequency, calendar_store_created: CalendarStore
 ) -> None:
     with pytest.raises(ValueError):
@@ -73,7 +73,7 @@ async def test_create_calendar_twice(
         )
 
 
-async def test_get_calendar(
+async def test_find_calendar(
     freq_1d: Frequency, calendar_store_created: CalendarStore
 ) -> None:
     actual_calendar = await calendar_store_created.find(
@@ -90,7 +90,7 @@ async def test_get_calendar(
     assert actual_calendar[-1] == 9
 
 
-async def test_get_calendar_not_created(
+async def test_find_calendar_not_created(
     freq_1d: Frequency, calendar_store: CalendarStore
 ) -> None:
     with pytest.raises(ValueError):
@@ -111,7 +111,7 @@ async def test_update_calendar(
     )
     await calendar_store.update(
         freq_1d,
-        pendulum.parse("2020-01-15"),
+        end_datetime=pendulum.parse("2020-01-15"),
     )
     actual_calendar = calendar_store._data[freq_1d][:].index
     expected_calendar = pd.date_range(
@@ -126,8 +126,24 @@ async def test_update_calendar_not_created(
     with pytest.raises(ValueError):
         await calendar_store.update(
             freq_1d,
-            pendulum.parse("2020-01-15"),
+            end_datetime=pendulum.parse("2020-01-15"),
         )
+
+
+async def test_update_calendar_upsert(
+    freq_1d: Frequency, calendar_store: CalendarStore
+) -> None:
+    await calendar_store.update(
+        freq_1d,
+        start_datetime=pendulum.parse("2020-01-01"),
+        end_datetime=pendulum.parse("2020-01-31"),
+        upsert=True,
+    )
+    actual_calendar = calendar_store._data[freq_1d][:].index
+    expected_calendar = pd.date_range(
+        "2020-01-01", "2020-01-31", freq=freq_1d.to_str(), tz="UTC"
+    )
+    np.testing.assert_array_equal(actual_calendar, expected_calendar)
 
 
 async def test_update_calendar_end_datetime_less_than_start_datetime(
@@ -137,7 +153,7 @@ async def test_update_calendar_end_datetime_less_than_start_datetime(
     with pytest.raises(ValueError):
         await calendar_store_created.update(
             freq_1d,
-            pendulum.parse("2020-01-01"),
+            end_datetime=pendulum.parse("2020-01-01"),
         )
 
 

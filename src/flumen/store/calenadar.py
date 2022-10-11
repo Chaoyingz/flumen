@@ -1,5 +1,5 @@
 import pathlib
-from typing import Dict
+from typing import Dict, Optional
 
 import pandas as pd
 import pendulum
@@ -59,10 +59,18 @@ class CalendarStore(Store):
     async def update(
         self,
         freq: Frequency,
+        *,
+        start_datetime: Optional[pendulum.DateTime] = None,
         end_datetime: pendulum.DateTime,
+        upsert: bool = False,
     ) -> None:
+        # TODO: Update the calendar start datetime without changing the existing
+        #  calendar index
         if freq not in self._data:
-            raise ValueError(f"Calendar for {freq} does not exist")
+            if upsert and start_datetime is not None:
+                return await self.insert(freq, start_datetime, end_datetime)
+            else:
+                raise ValueError(f"Calendar for {freq} does not exist")
         current_end_datetime = pendulum.parse(self._data[freq][-1].astype(str))
         if end_datetime <= current_end_datetime:
             raise ValueError(
