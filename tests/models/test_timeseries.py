@@ -9,8 +9,8 @@ from flumen.models.timeseries import TimeSeries
 def test_validate_datetime() -> None:
     with pytest.raises(ValueError) as excinfo:
         TimeSeries(
-            entity_id="entity_id",
-            feature_id="field_id",
+            entity="entity_id",
+            field="field_id",
             freq=Frequency.from_str("D"),
             start_datetime=pendulum.parse("2020-01-03"),
             end_datetime=pendulum.parse("2020-01-01"),
@@ -26,8 +26,8 @@ def test_validate_datetime() -> None:
 def test_validate_value_type() -> None:
     with pytest.raises(ValueError) as excinfo:
         TimeSeries(
-            entity_id="entity_id",
-            feature_id="field_id",
+            entity="entity_id",
+            field="field_id",
             freq=Frequency.from_str("D"),
             start_datetime=pendulum.parse("2020-01-01"),
             end_datetime=pendulum.parse("2020-01-03"),
@@ -46,8 +46,8 @@ def test_validate_value_type() -> None:
 def test_validate_values() -> None:
     with pytest.raises(ValueError) as excinfo:
         TimeSeries(
-            entity_id="entity_id",
-            feature_id="field_id",
+            entity="entity_id",
+            field="field_id",
             freq=Frequency.from_str("D"),
             start_datetime=pendulum.parse("2020-01-01"),
             end_datetime=pendulum.parse("2020-01-03"),
@@ -65,8 +65,8 @@ def test_validate_values() -> None:
 
 def test_convert_timezone() -> None:
     ts = TimeSeries(
-        entity_id="entity_id",
-        feature_id="field_id",
+        entity="entity_id",
+        field="field_id",
         freq=Frequency.from_str("D"),
         start_datetime=pendulum.parse("2020-01-01"),
         end_datetime=pendulum.parse("2020-01-03"),

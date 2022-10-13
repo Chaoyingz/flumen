@@ -9,8 +9,8 @@ from flumen.models.frequency import Frequency
 
 
 class TimeSeries(BaseModel):
-    entity_id: str
-    feature_id: str
+    entity: str
+    field: str
     freq: Frequency
     start_datetime: DateTime
     end_datetime: DateTime
