@@ -64,7 +64,10 @@ class BigArrayStorage(Generic[_T], MutableSequence):
     def __delitem__(self, index: Union[int, slice]) -> None:
         data: np.ndarray = self[:]
         data = np.delete(data, index)
-        data.tofile(self._uri)
+        if data.size == 0:
+            self._uri.unlink()
+        else:
+            data.tofile(self._uri)
 
     def __len__(self) -> int:
         rv: int = self._uri.stat().st_size // self._size
@@ -83,7 +86,7 @@ class BigArrayStorage(Generic[_T], MutableSequence):
         if start is None:
             start = 0
         if stop is None:
-            stop = len(self)
+            stop = len(self) + 1
         if stop < 0:
-            stop = len(self) + stop
+            stop = len(self) + 1 + stop
         return start, stop
